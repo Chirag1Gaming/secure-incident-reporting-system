@@ -45,7 +45,15 @@ class AdminDashboardController extends Controller
         $avgResolution = Incident::whereNotNull('resolved_at')
             ->select(DB::raw('AVG(TIMESTAMPDIFF(HOUR, created_at, resolved_at)) as avg_hours'))
             ->value('avg_hours');
-        
+
+
+        $totalIncidents = Incident::count();
+        $openCount = Incident::where('status', 'Open')->count();
+        $resolvedCount = Incident::where('status', 'Resolved')->count();
+        $categoryCounts = Incident::selectRaw('category, COUNT(*) as count')
+            ->groupBy('category')
+            ->pluck('count', 'category');
+
         return view('admin.dashboard', compact(
             'incidents',
             'totalIncidents',
@@ -53,7 +61,11 @@ class AdminDashboardController extends Controller
             'categoriesCounts',
             'avgResolution',
             'statusFilter',
-            'categoryFilter'
+            'categoryFilter',
+            'totalIncidents',
+            'openCount',
+            'resolvedCount',
+            'categoryCounts'
         ));
     }
 }

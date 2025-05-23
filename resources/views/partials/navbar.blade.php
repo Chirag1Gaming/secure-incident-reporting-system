@@ -38,5 +38,21 @@
         </li>
         @endauth
 
+        <ul class="navbar-nav me-auto">
+            @role('Admin|Super Admin')
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('admin.dashboard') }}">Dashboard</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('admin.incidents.index') }}">Manage Incidents</a>
+            </li>
+            @endrole
+
+            @role('Super Admin')
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('superadmin.users.index') }}">Manage Users</a>
+            </li>
+            @endrole
+        </ul>
     </div>
 </nav>

@@ -99,8 +99,62 @@
     </table>
 
     {{ $incidents->withQueryString()->links() }}
+
+    <div class="container">
+        <h1 class="mb-4">Admin Dashboard</h1>
+
+        <div class="row">
+            <div class="col-md-3">
+                <div class="card text-white bg-primary mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">Total Incidents</h5>
+                        <p class="card-text display-6">{{ $totalIncidents }}</p>
+                    </div>
+                </div>
+            </div>
+            <!-- Add similar cards for Avg Resolution, etc. -->
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <canvas id="incidentStatusChart"></canvas>
+            </div>
+            <div class="col-md-6">
+                <canvas id="incidentCategoryChart"></canvas>
+            </div>
+        </div>
+    </div>
 </div>
 @endsection
+
+
+@push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const statusChart = new Chart(document.getElementById('incidentStatusChart'), {
+        type: 'pie',
+        data: {
+            labels: ['Open', 'Resolved'],
+            datasets: [{
+                data: [{{ $openCount }}, {{ $resolvedCount }}],
+                backgroundColor: ['#ffc107', '#28a745'],
+            }]
+        }
+    });
+
+    const categoryChart = new Chart(document.getElementById('incidentCategoryChart'), {
+        type: 'bar',
+        data: {
+            labels: {!! json_encode(array_keys($categoryCounts)) !!},
+            datasets: [{
+                label: 'Incidents by Category',
+                data: {!! json_encode(array_values($categoryCounts)) !!},
+                backgroundColor: '#007bff',
+            }]
+        }
+    });
+</script>
+@endpush
 
 @section('scripts')
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
